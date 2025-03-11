@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fruit Pick Game</title>
+    <style type="text/css">
+        body {
+            background-image: url('12.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        #fruit {
+            display: none;
+            position: absolute;
+            animation: fallAnimation 5s linear forwards;
+        }
+        p {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 24px;
+        }
+        @keyframes fallAnimation {
+            0% {
+                top: -100px;
+                opacity: 0; 
+            }
+            10% {
+                opacity: 0.3;
+            }
+            30% {
+                opacity: 0.6;
+            }
+            40% {
+                opacity: 0.7;
+            }
+            70% {
+                opacity: 0.9;
+            }
+            100% {
+                top: calc(100vh - var(--fruit-size));
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <p>You took <span id="time"></span> seconds.<br> Location: <span id="location"></span></p>
+    <img id="fruit" src="" alt="fruit">
+    <script type="text/javascript">
+        var start = new Date().getTime();
+        var fruits = [
+            'a.png', 
+            'b.png',
+            'c.png',
+            'g.png',
+            'o.png'
+        ];
+
+        function getRandomFruit() {
+            var index = Math.floor(Math.random() * fruits.length);
+            return fruits[index];
+        }
+
+        function shapeAppear() {
+            var left = Math.random() * (window.innerWidth - 100);
+            var top = -100; 
+            var width = Math.random() * 100 + 50;
+
+            var fruit = document.getElementById("fruit");
+            fruit.src = getRandomFruit();
+            fruit.style.width = width + "px";
+            fruit.style.height = width + "px";
+            fruit.style.left = left + "px";
+            fruit.style.top = top + "px";
+            fruit.style.setProperty('--fruit-size', width + 'px'); 
+            fruit.style.display = "block";
+
+            start = new Date().getTime();
+        }
+
+        function shapeAppearDelay() {
+            setTimeout(shapeAppear, Math.random() * 3000); 
+        }
+
+        shapeAppearDelay();
+
+        function fruitClick(event) {
+            document.getElementById("fruit").style.display = "none";
+            var end = new Date().getTime();
+            var time = (end - start) / 1000;
+            document.getElementById("time").innerHTML = time.toFixed(2) + 's';
+
+            var latitude = ((event.clientY / window.innerHeight) * 180 - 90).toFixed(2);
+            document.getElementById("location").innerHTML = latitude;
+
+            shapeAppearDelay();
+        }
+
+        document.getElementById('fruit').onclick = fruitClick;
+
+        
+        var checkFruitInterval = setInterval(function() {
+            var fruit = document.getElementById("fruit");
+            var fruitRect = fruit.getBoundingClientRect();
+            if (fruitRect.bottom >= window.innerHeight) {
+                clearInterval(checkFruitInterval);
+                fruit.style.display = "none";
+                if (confom("Game Over! Fruits have reached the ground. Retry?")) {
+                    shapeAppearDelay();
+                } else {
+                   
+                }
+            }
+        }, 100); 
+    </script>
+</body>
+</html>
